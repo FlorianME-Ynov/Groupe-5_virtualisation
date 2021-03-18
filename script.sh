@@ -2,8 +2,7 @@
 sudo apt-get -y install docker docker-compose
 
 sudo wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/blob/main/docker-compose.yaml
-sudo wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/blob/main/Configs
-pwd
+sudo wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/blob/main/Configs ../
 
 mkdir multimedia-project
 cd multimedia-project
