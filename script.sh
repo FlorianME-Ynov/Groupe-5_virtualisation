@@ -18,12 +18,12 @@ echo "<q>	q = Quitter"
 read choix 
 case $choix in 
   1) sudo apt-get -y install docker docker-compose
-    sudo docker-compose down
+    wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/blob/main/docker-compose.yaml
     mkdir multimedia-project
     cd multimedia-project
     mkdir -p {jacket,jellyfin,radarr,sonarr,transmission,torrents,videos,cloudfare,bazarr,nzbhydra2,organizr,heimdall}
     cd ..
-    wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/blob/7e32149e47f577ec2a04febbe7a8d464a83d9fa8/docker-compose.yaml
+    wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/blob/main/Configs
     tar -xf ./Configs -C ./
     sudo docker-compose up -d
     sudo docker run -d \
@@ -51,20 +51,6 @@ case $choix in
 
   5) sudo docker-compose down
      sudo docker-compose up -d
-  ;;
-
-  6) sudo docker run -d \
-      -p 8000:8000 \
-      -p 9000:9000 \
-      --name=portainer \
-      --restart=always \
-      -v /var/run/docker.sock:/var/run/docker.sock \
-      -v portainer_data:/data portainer/portainer-ce 
-
-    sudo docker run -d \
-      --name watchtower \
-      -v /var/run/docker.sock:/var/run/docker.sock \
-      containrrr/watchtower
   ;;
   
   q) exit;;
