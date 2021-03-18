@@ -1,15 +1,13 @@
-#!/bin/bash
-##Add user
 GREEN='\033[0;32m'
 NORMAL='\033[0m' # No Color
-BOLD=$(tput bold) #Text en gras
+BOLD=$(tput bold) #text en gras
 RED='\033[0;31m'
 ping -c 1 8.8.8.8 &> /dev/null
 
 #Mise en place de garde fou en fonction de l'accès réseau et check si l'user=ROOT
 if [[ $? -ne 0 ]];
 then
-	echo -e "${RED}${BOLD}ERROR this VM can't reach internet the script can't be lauch${NORMAL}"
+    echo -e "${RED}${BOLD}ERROR this VM can't reach internet the script can't be lauch${NORMAL}"
 else
 #Début du script, demande d'informations :
 if [ $(id -u) -eq 0 ]; then
