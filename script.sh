@@ -23,6 +23,7 @@ case $choix in
     cd multimedia-project
     mkdir -p {jacket,jellyfin,radarr,sonarr,transmission,torrents,videos,cloudfare,bazarr,nzbhydra2,organizr,heimdall}
     cd ..
+    wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/blob/7e32149e47f577ec2a04febbe7a8d464a83d9fa8/docker-compose.yaml
     tar -xf ./Configs -C ./
     sudo docker-compose up -d
     sudo docker run -d \
