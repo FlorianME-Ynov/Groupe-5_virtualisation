@@ -7,7 +7,7 @@ echo "<2> 	Recharger la configuration initiale"
 echo ""
 echo "Gestion de containers"
 echo "<3> 	Lancer les containers"
-echo "<4> 	Arreter les containers"
+echo "<4> 	Arreter les containers"cd ..
 echo "<5> 	Relancer les containers"
 echo ""
 echo "Gestion et mise à jour"
@@ -18,12 +18,11 @@ echo "<q>	q = Quitter"
 read choix 
 case $choix in 
   1) sudo apt-get -y install docker docker-compose
-    wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/blob/main/docker-compose.yaml
+    sudo docker-compose down
     mkdir multimedia-project
     cd multimedia-project
     mkdir -p {jacket,jellyfin,radarr,sonarr,transmission,torrents,videos,cloudfare,bazarr,nzbhydra2,organizr,heimdall}
     cd ..
-    wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/blob/main/Configs
     tar -xf ./Configs -C ./
     sudo docker-compose up -d
     sudo docker run -d \
@@ -51,6 +50,20 @@ case $choix in
 
   5) sudo docker-compose down
      sudo docker-compose up -d
+  ;;
+
+  6) sudo docker run -d \
+      -p 8000:8000 \
+      -p 9000:9000 \
+      --name=portainer \
+      --restart=always \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v portainer_data:/data portainer/portainer-ce 
+
+    sudo docker run -d \
+      --name watchtower \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      containrrr/watchtower
   ;;
   
   q) exit;;
