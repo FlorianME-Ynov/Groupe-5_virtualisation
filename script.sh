@@ -61,15 +61,10 @@ echo "<q>	q = Quitter"
 read choix 
 case $choix in 
   1) sudo apt-get -y install docker docker-compose
-
-    curl https://raw.githubusercontent.com/FlorianME-Ynov/Groupe-5_virtualisation/main/docker-compose.yaml --output ./docker-compose.yaml
-    wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/raw/main/Configs
-
     mkdir multimedia-project
     cd multimedia-project
     mkdir -p {jacket,jellyfin,radarr,sonarr,transmission,torrents,videos,cloudfare,bazarr,nzbhydra2,organizr,heimdall}
     cd ..
-    tar -xf ./Configs -C ./
     sudo docker-compose up -d
   ;;
   2) sudo tar -xvf ./Configs -C ./
