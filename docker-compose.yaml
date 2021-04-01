@@ -198,8 +198,8 @@ services:
     volumes:
       - ./multimedia-project/heimdall/config:/config
     ports:
-      - 81:81
-      - 444:444
+      - 81:80
+      - 444:443
     restart: unless-stopped
 
   reverse-proxy:
