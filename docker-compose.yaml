@@ -1,0 +1,229 @@
+version: "2.1"
+services:
+  jackett:
+    image: ghcr.io/linuxserver/jackett
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - AUTO_UPDATE=true #optional
+      - RUN_OPTS=<run options here> #optional
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.jackett.rule=Host(`jackett.tp-multimedia.duckdns.org`)"
+    - "traefik.http.routers.jackett.entrypoints=https,http"
+    - "traefik.http.services.jackett.loadbalancer.server.port=9117"
+    - "traefik.http.routers.jackett.tls=true"
+    - "traefik.http.routers.jackett.tls.certresolver=florian"
+    volumes:
+      - ./multimedia-project/jacket/config:/config
+      - ./multimedia-project/jacket/downloads/:/downloads
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+
+  transmission:
+    image: ghcr.io/linuxserver/transmission
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
+      - USER=username #optional
+      - PASS=password #optional
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.transmission.rule=Host(`transmission.tp-multimedia.duckdns.org`)"
+    - "traefik.http.routers.transmission.entrypoints=https,http"
+    - "traefik.http.services.transmission.loadbalancer.server.port=9091"
+    - "traefik.http.routers.transmission.tls=true"
+    - "traefik.http.routers.transmission.tls.certresolver=florian"
+    volumes:
+      - ./multimedia-project/transmission/config:/config
+      - ./multimedia-project/transmission/downloads:/downloads
+      - ./multimedia-project/transmission/watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+
+  flaresolverr:
+    # DockerHub mirror flaresolverr/flaresolverr:latest
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.flaresolverr.rule=Host(`flaresolverr.tp-multimedia.duckdns.org`)"
+    - "traefik.http.routers.flaresolverr.entrypoints=https,http"
+    - "traefik.http.services.flaresolverr.loadbalancer.server.port=8191"
+    - "traefik.http.routers.flaresolverr.tls=true"
+    - "traefik.http.routers.flaresolverr.tls.certresolver=florian"
+    ports:
+      - "${PORT:-8191}:8191"
+    restart: unless-stopped 
+
+  sonarr:
+    image: ghcr.io/linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.sonarr.rule=Host(`sonarr.tp-multimedia.duckdns.org`)"
+    - "traefik.http.routers.sonarr.entrypoints=https,http"
+    - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+    - "traefik.http.routers.sonarr.tls=true"
+    - "traefik.http.routers.sonarr.tls.certresolver=florian"
+    volumes:
+      - ./multimedia-project/sonarr/config:/config
+      - ./multimedia-project/jellyfin/tv-series:/tv
+      - ./multimedia-project/transmission/downloads:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  radarr:
+    image: ghcr.io/linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.radarr.rule=Host(`radarr.tp-multimedia.duckdns.org`)"
+    - "traefik.http.routers.radarr.entrypoints=https,http"
+    - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+    - "traefik.http.routers.radarr.tls=true"
+    - "traefik.http.routers.radarr.tls.certresolver=florian"
+    volumes:
+      - ./multimedia-project/radarr/config:/config
+      - ./multimedia-project/jellyfin/movies:/movies
+      - ./multimedia-project/transmission/downloads:/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  jellyfin:
+    image: ghcr.io/linuxserver/jellyfin
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.tp-multimedia.duckdns.org`)"
+    - "traefik.http.routers.jellyfin.entrypoints=https,http"
+    - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+    - "traefik.http.routers.jellyfin.tls=true"
+    - "traefik.http.routers.jellyfin.tls.certresolver=florian"
+    volumes:
+      - ./multimedia-project/jellyfin/config:/config
+      - ./multimedia-project/jellyfin/tv-series:/data/tvshows
+      - ./multimedia-project/jellyfin/movies:/data/movies
+    ports:
+      - 8096:8096
+      - 8920:8920 #optional
+      - 7359:7359/udp #optional
+      - 1900:1900/udp #optional
+    restart: unless-stopped
+
+  bazarr:
+    image: ghcr.io/linuxserver/bazarr
+    container_name: bazarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.bazarr.rule=Host(`bazarr.tp-multimedia.duckdns.org`)"
+    - "traefik.http.routers.bazarr.entrypoints=https,http"
+    - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
+    - "traefik.http.routers.bazarr.tls=true"
+    - "traefik.http.routers.bazarr.tls.certresolver=florian"
+    volumes:
+      - ./multimedia-project/bazarr/config:/config
+      - ./multimedia-project/jellyfin/movies:/movies
+      - ./multimedia-project/jellyfin/tv-series:/tv
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+
+  nzbhydra2:
+    image: ghcr.io/linuxserver/nzbhydra2
+    container_name: nzbhydra2
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nzbhydra2.rule=Host(`nzbhydra2.tp-multimedia.duckdns.org`)"
+      - "traefik.http.routers.nzbhydra2.entrypoints=https,http"
+      - "traefik.http.services.nzbhydra2.loadbalancer.server.port=5076"
+      - "traefik.http.routers.nzbhydra2.tls=true"
+      - "traefik.http.routers.nzbhydra2.tls.certresolver=florian"
+    volumes:
+      - ./multimedia-project/nzbhydra2/config:/config
+      - ./multimedia-project/nzbhydra2/downloads:/downloads
+    ports:
+      - 5076:5076
+    restart: unless-stopped
+
+  heimdall :
+    image: ghcr.io/linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heimdall.rule=Host(`heimdall.tp-multimedia.duckdns.org`)"
+      - "traefik.http.routers.heimdall.entrypoints=https,http"
+      - "traefik.http.services.heimdall.loadbalancer.server.port=81"
+      - "traefik.http.routers.heimdall.tls=true"
+      - "traefik.http.routers.heimdall.tls.certresolver=florian"
+    volumes:
+      - ./multimedia-project/heimdall/config:/config
+    ports:
+      - 81:81
+      - 444:444
+    restart: unless-stopped
+
+  reverse-proxy:
+    # https://blog.eleven-labs.com/fr/utiliser-traefik-comme-reverse-proxy/
+    restart: always
+    image: traefik:v2.0
+    ports:
+      - "443:443"
+      - "80:80"
+    command:
+      - "--providers.docker"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+    volumes:
+      - ./reverse_proxy/traefik.toml:/etc/traefik/traefik.toml
+      - ./reverse_proxy/services.toml:/etc/traefik/services.toml
+      - ./reverse_proxy/acme.json:/acme.json
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.http.routers.api.rule=Host(`tp-multimedia.duckdns.org`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.entrypoints=http"
+      - "traefik.http.routers.api.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=florian:$$apr1$$EnnMFCZO$$05tnt5LQkk6f4VcNNpqJO/"
+    container_name: reverse_proxy
