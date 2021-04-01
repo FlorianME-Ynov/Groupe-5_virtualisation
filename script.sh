@@ -1,7 +1,18 @@
 #! /bin/bash
 
 wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/raw/main/reverse_proxy.tar
-tar -xf ./reverse_proxy.tar -C ./
+curl https://raw.githubusercontent.com/FlorianME-Ynov/Groupe-5_virtualisation/main/docker-compose.yaml --output ./docker-compose.yaml
+wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/raw/main/Configs
+
+DIR_Projet="./multimedia-project/"
+if [ -d "$DIR_Projet" ]; then
+  tar -xf ./Configs -C ./
+fi
+
+DIR_proxy="./reverse_proxy/"
+if [ -d "$DIR_proxy" ]; then
+  tar -xf ./reverse_proxy.tar -C ./
+fi
 
 #Variables
 reverse_proxy_config="./reverse_proxy/traefik.toml"
