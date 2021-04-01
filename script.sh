@@ -4,20 +4,13 @@ wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/raw/main/reverse_
 curl https://raw.githubusercontent.com/FlorianME-Ynov/Groupe-5_virtualisation/main/docker-compose.yaml --output ./docker-compose.yaml
 wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/raw/main/Configs
 
-DIR_Projet="./multimedia-project/"
-if [ -d "$DIR_Projet" ]; then
-else
+if [ ! -d ./multimedia-project ]; then
   tar -xf ./Configs -C ./
-  exit 1
 fi
 
-DIR_proxy="./reverse_proxy/"
-if [ -d "$DIR_proxy" ]; then
-else
+if [ ! -d ./reverse_proxy ]; then
   tar -xf ./reverse_proxy.tar -C ./
-  exit 1
-fi  
-
+fi
 
 #Variables
 reverse_proxy_config="./reverse_proxy/traefik.toml"
@@ -108,4 +101,3 @@ case $choix in
   
   q) exit;;
 esac
-
