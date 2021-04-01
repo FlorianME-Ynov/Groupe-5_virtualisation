@@ -6,13 +6,18 @@ wget https://github.com/FlorianME-Ynov/Groupe-5_virtualisation/raw/main/Configs
 
 DIR_Projet="./multimedia-project/"
 if [ -d "$DIR_Projet" ]; then
+else
   tar -xf ./Configs -C ./
+  exit 1
 fi
 
 DIR_proxy="./reverse_proxy/"
 if [ -d "$DIR_proxy" ]; then
+else
   tar -xf ./reverse_proxy.tar -C ./
-fi
+  exit 1
+fi  
+
 
 #Variables
 reverse_proxy_config="./reverse_proxy/traefik.toml"
