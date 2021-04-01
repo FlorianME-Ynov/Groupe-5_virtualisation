@@ -110,6 +110,7 @@ case $choix in
   ;;
 
   6) 
+    read -p "Zabbix Appliance Server address: " zabbix_app_addr
     sudo docker run -d \
       -p 8000:8000 \
       -p 9000:9000 \
@@ -117,11 +118,17 @@ case $choix in
       --restart=always \
       -v /var/run/docker.sock:/var/run/docker.sock \
       -v portainer_data:/data portainer/portainer-ce 
+      
+    sudo docker run \
+      --name=dockbix-agent-xxl \
+      --net=host \
+      --privileged \
+      -v /:/rootfs \
+      -v /var/run:/var/run \
+      --restart unless-stopped \
+      -e ZA_Server=$zabbix_app_addr \
+      -d monitoringartist/dockbix-agent-xxl-limited:latest
 
-    sudo docker run -d \
-      --name watchtower \
-      -v /var/run/docker.sock:/var/run/docker.sock \
-      containrrr/watchtower
   ;;
   
   q) exit;;
