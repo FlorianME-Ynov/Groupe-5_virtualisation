@@ -41,6 +41,7 @@ ReplaceNames()
   search_dns="{dns}"
 
   # Take the replace string
+  echo "Informations LetsEncrypt"
   read -p "Entrez votre nom: " replace_name
   read -p "Entrez votre Email: " replace_email
   read -p "Entrez votre FQDN: " replace_dns
