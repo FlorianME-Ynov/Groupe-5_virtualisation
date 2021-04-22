@@ -86,6 +86,7 @@ case $choix in
     GetAndInstall
     ReplaceNames
     sudo docker-compose up -d
+    sleep 100
     sudo docker-compose down
     sudo docker-compose up -d
   ;;
